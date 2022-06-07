@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # My apps
     'core',
     'produto',
+    'estoque',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'estoque.urls'
+ROOT_URLCONF = 'controle_estoque.urls'
 
 TEMPLATES = [
     {
@@ -75,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'estoque.wsgi.application'
+WSGI_APPLICATION = 'controle_estoque.wsgi.application'
 
 
 # Database
