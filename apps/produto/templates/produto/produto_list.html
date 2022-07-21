@@ -1,0 +1,53 @@
+{% extends 'core/base.html '%}
+
+{% block css %}
+
+  
+{% endblock css %}
+
+{% block content %}
+    <h2><i class="fa fa-user">Lista de Produtos</i></h2>
+
+    {% if object_list %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Importado</th>
+                <th>NCM</th>
+                <th>Produto</th>
+                <th>Preço</th>
+                <th class="text-center">Estoque</th>
+                <th class="text-center">Estoque mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+                <tr>
+                    <td>
+                        {% if object.importado %}
+                            <i class="fa fa-check-circle ok"></i>
+                        {% else %}
+                            <i class="fa fa-minus-circle no"></i>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ object.ncm }}</td>
+                    <td>
+                        <!-- <a href="{% url 'produto:produto_detail' object.pk %}">{{ object.produto }}</a> -->
+                        <a href="{{ object.get_absolute_url }}">{{ object.produto }}</a>
+                    </td>
+                    <td> R$<span class="pull-right">{{ object.preco }}</span> </td>
+                    <td class="text-center">{{ object.estoque }}</td   class="text-center">
+                    <td class="text-center">{{ object.estoque_minimo }}</td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+    {% else %}
+        <p class="alert alert-warning">Sem itens na lista</p>
+    {% endif %}
+  
+{% endblock content %}
