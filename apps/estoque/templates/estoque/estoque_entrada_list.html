@@ -3,9 +3,11 @@
 {% block content %}
 <h2>Estoque Entrada
     <span class="pull-right">
-        <button type="button" class="btn btn-primary">
-            <span class="fa fa-plus"></span>Adicionar
-        </button>
+        <a href="{% url 'estoque:estoque_entrada_add' %}">
+            <button type="button" class="btn btn-primary">
+                <span class="fa fa-plus"></span>Adicionar
+            </button>
+        </a>
     </span>
 </h2>
 
@@ -23,7 +25,7 @@
             {% for object in object_list %}
                 <tr>
                     <td>
-                        <a href=""> {{ object }}</a>
+                        <a href="{{ object.get_absolute_url }}"> {{ object }}</a>
                     </td>
                     <td>{{ object.nf_formated }}</td>
                     <td>{{ object.created }}</td>
