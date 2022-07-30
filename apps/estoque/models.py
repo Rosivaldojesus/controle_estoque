@@ -1,9 +1,9 @@
-from tabnanny import verbose
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse_lazy
 from apps.core.models import TimeStampedModel
 from apps.produto.models import Produto
+from  .managers import EstoqueEntradaManager, EstoqueSaidaManager
 
 # Create your models here.
 
@@ -31,10 +31,7 @@ class Estoque(TimeStampedModel):
         return str(self.nf).zfill(3)
 
 
-class EstoqueEntradaManager(models.Manager):
 
-    def get_queryset(self):
-        return super(EstoqueEntradaManager, self).get_queryset().filter(movimento='e')
 
 
 class EstoqueEntrada(Estoque):
@@ -48,10 +45,7 @@ class EstoqueEntrada(Estoque):
 
 
 
-class EstoqueSaidaManager(models.Manager):
-    
-    def get_queryset(self):
-        return super(EstoqueSaidaManager, self).get_queryset().filter(movimento='s')
+
 
 
 class EstoqueSaida(Estoque):
