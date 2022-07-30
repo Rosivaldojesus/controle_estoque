@@ -38,7 +38,7 @@ def estoque_entrada_add(request):
     template_name = 'estoque/estoque_entrada_form.html'
     estoque_form = EstoqueEntrada()
     item_estoque_formset = inlineformset_factory(
-        EstoqueEntrada,
+        Estoque,
         EstoqueItens,
         form=EstoqueItensForm,
         extra=0,
@@ -71,11 +71,15 @@ def estoque_entrada_add(request):
     return render(request, template_name, context)
 
 
-
-
-
 def estoque_saida_list(request):
     template_name = 'estoque/estoque_saida_list.html'
     objects = EstoqueSaida.objects.all()
     context = { 'object_list': objects }
+    return render(request, template_name, context)
+
+
+def estoque_saida_detail(request, pk):
+    template_name = 'estoque/estoque_saida_detail.html'
+    obj = EstoqueSaida.objects.get(pk=pk)
+    context = { 'object': obj }
     return render(request, template_name, context)
