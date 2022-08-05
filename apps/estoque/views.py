@@ -1,8 +1,9 @@
 
+from multiprocessing import context
 from django.forms import inlineformset_factory
 from django.shortcuts import render, resolve_url
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from apps import produto
 from apps.produto.models import Produto
@@ -23,6 +24,7 @@ from .models import Estoque, EstoqueEntrada, EstoqueItens, EstoqueSaida
     return render(request, template_name, context)
  '''
 
+
 class EstoqueEntradaList(ListView):
     model = EstoqueEntrada
     template_name = 'estoque/estoque_list.html'
@@ -35,14 +37,24 @@ class EstoqueEntradaList(ListView):
         return context
     
 
-def estoque_entrada_detail(request, pk):
+''' def estoque_entrada_detail(request, pk):
     template_name = 'estoque/estoque_detail.html'
     obj = EstoqueEntrada.objects.get(pk=pk)
     context = {
         'object': obj,
-        'url_list': 'estoque:estoque_saida_list'
+        'url_list': 'estoque:estoque_entrada_list'
         }
     return render(request, template_name, context)
+ '''
+
+class EstoqueEntradaDetail(DetailView):
+    model = EstoqueEntrada
+    template_name = 'estoque/estoque_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(EstoqueEntradaDetail, self).get_context_data(**kwargs)
+        context['url_list'] = 'estoque:estoque_entrada_list'
+        return context
 
 
 def dar_baixa_estoque(form):
@@ -122,9 +134,7 @@ class EstoqueSaidaList(ListView):
         return context
 
 
-
-
-def estoque_saida_detail(request, pk):
+''' def estoque_saida_detail(request, pk):
     template_name = 'estoque/estoque_detail.html'
     obj = EstoqueSaida.objects.get(pk=pk)
     context = {
@@ -132,6 +142,18 @@ def estoque_saida_detail(request, pk):
         'url_list': 'estoque:estoque_saida_list'
         }
     return render(request, template_name, context)
+ '''
+
+ 
+class EstoqueSaidaDetail(DetailView):
+    model = EstoqueSaida
+    template_name = 'estoque/estoque_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(EstoqueSaidaDetail, self).get_context_data(**kwargs)
+        context['url_list'] = 'estoque:estoque_saida_list'
+        return context
+
 
 
 def estoque_saida_add(request):
