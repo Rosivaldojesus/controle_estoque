@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.forms import inlineformset_factory
 from django.shortcuts import render, resolve_url
 from django.http import HttpResponseRedirect
@@ -34,9 +35,8 @@ def dar_baixa_estoque(form):
     print('Estoque atualizado com sucesso.')
 
 
-def estoque_entrada_add(request):
-    template_name = 'estoque/estoque_entrada_form.html'
-    estoque_form = EstoqueEntrada()
+def estoque_add(request, template_name, movimento, url):
+    estoque_form = Estoque()
     item_estoque_formset = inlineformset_factory(
         Estoque,
         EstoqueItens,
@@ -45,7 +45,6 @@ def estoque_entrada_add(request):
         min_num=1,
         validate_min=True,
     )
-
     if request.method == 'POST':
         form = EstoqueForm(request.POST, instance=estoque_form, prefix='main')
         formset = item_estoque_formset(
@@ -55,21 +54,28 @@ def estoque_entrada_add(request):
         )
         if form.is_valid() and formset.is_valid():
             form = form.save(commit=False)
-            form.movimento = 'e'
-            form = form.save()
+            form.movimento = movimento
+            form.save()
             formset.save()
             dar_baixa_estoque(form)
-            url = 'estoque:estoque_entrada_detail'
-            return HttpResponseRedirect(resolve_url(url, form.pk))
+            #url = 'estoque:estoque_entrada_detail'
+            return {'pk': form.pk}
     else:
         form = EstoqueForm(instance=estoque_form, prefix='main')
         formset = item_estoque_formset(instance=estoque_form, prefix='estoque')
+    context = {'form': form, 'formset': formset}
+    return context
 
-    context = {
-        'forms': form,
-        'formset': formset,
-    }
 
+
+def estoque_entrada_add(request):
+    template_name = 'estoque/estoque_entrada_form.html'
+    movimento = 'e'
+    url = 'estoque:estoque_entrada_detail'
+    context = estoque_add(request, template_name, movimento, url)
+
+    if context.get('pk'):
+        return HttpResponseRedirect(resolve_url(url, context.get('pk')))
     return render(request, template_name, context)
 
 
@@ -89,38 +95,10 @@ def estoque_saida_detail(request, pk):
 
 def estoque_saida_add(request):
     template_name = 'estoque/estoque_saida_form.html'
-    estoque_form = EstoqueSaida()
-    item_estoque_formset = inlineformset_factory(
-        EstoqueSaida,
-        EstoqueItens,
-        form=EstoqueItensForm,
-        extra=0,
-        min_num=1,
-        validate_min=True,
-    )
+    movimento = 's'
+    url = 'estoque:estoque_saida_detail'
+    context = estoque_add(request, template_name, movimento, url)
 
-    if request.method == 'POST':
-        form = EstoqueForm(request.POST, instance=estoque_form, prefix='main')
-        formset = item_estoque_formset(
-            request.POST,
-            instance=estoque_form,
-            prefix='estoque'
-        )
-        if form.is_valid() and formset.is_valid():
-            form = form.save(commit=False)
-            form.movimento = 's'
-            form = form.save()
-            formset.save()
-            dar_baixa_estoque(form)
-            url = 'estoque:estoque_saida_detail'
-            return HttpResponseRedirect(resolve_url(url, form.pk))
-    else:
-        form = EstoqueForm(instance=estoque_form, prefix='main')
-        formset = item_estoque_formset(instance=estoque_form, prefix='estoque')
-
-    context = {
-        'forms': form,
-        'formset': formset,
-    }
-
+    if context.get('pk'):
+        return HttpResponseRedirect(resolve_url(url, context.get('pk')))
     return render(request, template_name, context)
