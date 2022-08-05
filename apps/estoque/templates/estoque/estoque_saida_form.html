@@ -5,7 +5,8 @@
 
 
 {% block content %}
-<a href="{% url 'estoque:estoque_entrada_list' %}">Voltar</a>
+
+<a href="{% url 'estoque:estoque_saida_list' %}">Voltar</a>
 
 <div class="row">
   <div class="cols">
@@ -58,7 +59,7 @@
                 <i class="fa fa-floppy-o"></i>
                 Salvar
               </button>
-              <a href="{% url 'estoque:estoque_entrada_list' %}" class="btn btn-danger">
+              <a href="{% url 'estoque:estoque_saida_list' %}" class="btn btn-danger">
                 <i class="fa fa-times"></i>
                 Cancelar
               </a>
@@ -72,7 +73,9 @@
 
 {% block js %}
 
-<script src="{% static 'js/estoque_entrada.js'%}"></script>
+<script src="{% static 'js/estoque_saida.js' %}">
+  
+</script>
 
 <script type="text/html" id="item-estoque">
   <div id="item-__prefix__" class="form-group">
