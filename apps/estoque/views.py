@@ -1,5 +1,3 @@
-
-from multiprocessing import context
 from django.forms import inlineformset_factory
 from django.shortcuts import render, resolve_url
 from django.http import HttpResponseRedirect
@@ -9,7 +7,10 @@ from apps import produto
 from apps.produto.models import Produto
 
 from .forms import EstoqueForm, EstoqueItensForm
+
 from .models import Estoque, EstoqueEntrada, EstoqueItens, EstoqueSaida
+
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -47,6 +48,7 @@ class EstoqueEntradaList(ListView):
     return render(request, template_name, context)
  '''
 
+
 class EstoqueEntradaDetail(DetailView):
     model = EstoqueEntrada
     template_name = 'estoque/estoque_detail.html'
@@ -67,13 +69,15 @@ def dar_baixa_estoque(form):
     print('Estoque atualizado com sucesso.')
 
 
-def estoque_add(request, template_name, movimento, url):
+@login_required
+def estoque_add(request, form_inline, template_name, movimento, url):
     estoque_form = Estoque()
     item_estoque_formset = inlineformset_factory(
         Estoque,
         EstoqueItens,
-        form=EstoqueItensForm,
+        form=form_inline,
         extra=0,
+        can_delete=False,
         min_num=1,
         validate_min=True,
     )
@@ -86,11 +90,11 @@ def estoque_add(request, template_name, movimento, url):
         )
         if form.is_valid() and formset.is_valid():
             form = form.save(commit=False)
+            form.funcionario = request.user
             form.movimento = movimento
             form.save()
             formset.save()
             dar_baixa_estoque(form)
-            #url = 'estoque:estoque_entrada_detail'
             return {'pk': form.pk}
     else:
         form = EstoqueForm(instance=estoque_form, prefix='main')
@@ -99,12 +103,13 @@ def estoque_add(request, template_name, movimento, url):
     return context
 
 
+@login_required
 def estoque_entrada_add(request):
+    form_inline = EstoqueItensForm
     template_name = 'estoque/estoque_entrada_form.html'
     movimento = 'e'
-    url = 'estoque:estoque_entrada_detail'
-    context = estoque_add(request, template_name, movimento, url)
-
+    url = 'estoque:estoque_detail'
+    context = estoque_add(request, form_inline, template_name, movimento, url)
     if context.get('pk'):
         return HttpResponseRedirect(resolve_url(url, context.get('pk')))
     return render(request, template_name, context)
@@ -144,7 +149,7 @@ class EstoqueSaidaList(ListView):
     return render(request, template_name, context)
  '''
 
- 
+
 class EstoqueSaidaDetail(DetailView):
     model = EstoqueSaida
     template_name = 'estoque/estoque_detail.html'
@@ -155,12 +160,13 @@ class EstoqueSaidaDetail(DetailView):
         return context
 
 
-
+@login_required
 def estoque_saida_add(request):
+    form_inline = EstoqueItensForm
     template_name = 'estoque/estoque_saida_form.html'
     movimento = 's'
-    url = 'estoque:estoque_saida_detail'
-    context = estoque_add(request, template_name, movimento, url)
+    url = 'estoque:estoque_detail'
+    context = estoque_add(request, form_inline, template_name, movimento, url)
 
     if context.get('pk'):
         return HttpResponseRedirect(resolve_url(url, context.get('pk')))

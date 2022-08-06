@@ -3,6 +3,7 @@ from . import views
 
 app_name = 'estoque'
 
+
 urlpatterns = [
     path('', views.EstoqueEntradaList.as_view(), name='estoque_entrada_list'),
     path('<int:pk>/', views.EstoqueEntradaDetail.as_view(), name='estoque_entrada_detail'),
