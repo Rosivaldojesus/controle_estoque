@@ -9,6 +9,12 @@ from django.http import JsonResponse
 def produto_list(request):
     template_name = 'produto/produto_list.html'
     objects = Produto.objects.all()
+
+    search = request.GET.get('search')
+    if search:
+        objects = objects.filter(produto__icontains=search)
+
+
     context = {'object_list': objects}
     return render(request, template_name, context)
 

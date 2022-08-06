@@ -2,15 +2,28 @@
 
 
 {% block content %}
-    <h2>
-        <span class="page-header">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <form action="." method="GET" class="form-inline">
+                <input type="text" id="search" name="search" class="form-control" placeholder="Busca">
+                <input type="submit" class="btn btn-primary" value="OK" style="margin-left: 10px;">
+            </form>
+        </div>
+    </div>
+        
+
+    <div class="page-header">
+        <h2>Lista de Produtos</h2>
+        <span class="pull-right">
             <a href="{% url 'produto:produto_add' %}">
                 <button type="button" class="btn btn-primary">
                     <span class="fa fa-plus"></span>Adicionar
                 </button>
             </a>
         </span>
-    </h2>
+    </div>
+
 
     {% if object_list %}
 
