@@ -13,7 +13,7 @@ MOVIMENTO = (
 )
 
 class Estoque(TimeStampedModel):
-    funcionario = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    funcionario = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True)
     nf = models.PositiveIntegerField('Nota Fiscal', null=True, blank=True)
     movimento = models.CharField(max_length=1, choices=MOVIMENTO, blank=True)
 
